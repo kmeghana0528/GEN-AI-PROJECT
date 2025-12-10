@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewSense | Hotel Review Analyzer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-concierge-bell"></i>
+                <span>ReviewSense</span>
+            </a>
+            <nav class="nav">
+                <a href="#analyzer" class="nav-link active">Analyze</a>
+                <a href="#batch" class="nav-link">Batch</a>
+                <a href="#categories" class="nav-link">Categories</a>
+                <a href="#about" class="nav-link">About</a>
+            </nav>
+            <button class="theme-btn" id="themeToggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <span class="hero-label">AI-Powered Analysis</span>
+            <h1>Hotel Review<br>Sentiment Analyzer</h1>
+            <p>Transform guest feedback into actionable insights using advanced LSTM neural networks.</p>
+            <div class="hero-features">
+                <div class="feature">
+                    <i class="fas fa-brain"></i>
+                    <span>Deep Learning</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <span>Instant Results</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Detailed Insights</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analyzer Section -->
+    <section id="analyzer" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Analyze a Review</h2>
+                <p>Enter a hotel guest review to detect sentiment and category</p>
+            </div>
+
+            <div class="card analyzer-card">
+                <div class="input-wrapper">
+                    <label for="reviewInput">Guest Review</label>
+                    <textarea 
+                        id="reviewInput" 
+                        placeholder="Type or paste a hotel review here..."
+                        rows="5"
+                    ></textarea>
+                    <div class="input-meta">
+                        <span class="char-count"><span id="charCount">0</span> / 5000</span>
+                        <div class="sample-btns">
+                            <span>Samples:</span>
+                            <button class="sample-btn" data-sentiment="positive" data-review="The room was absolutely spotless and the staff went above and beyond to make our stay memorable. Excellent breakfast with great variety. Would highly recommend!">Positive</button>
+                            <button class="sample-btn" data-sentiment="negative" data-review="Very disappointing stay. The room was dirty, AC didn't work properly, and the staff was unhelpful. Overpriced for what you get. Would not recommend.">Negative</button>
+                            <button class="sample-btn" data-sentiment="neutral" data-review="Average hotel experience. Room was clean but small. Breakfast was okay, nothing special. Location was convenient. Met basic expectations.">Neutral</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="analyzeBtn" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Analyze Sentiment
+                </button>
+            </div>
+
+            <!-- Results -->
+            <div id="resultSection" class="results hidden">
+                <div class="results-header">
+                    <h3>Analysis Results</h3>
+                    <button id="copyResult" class="btn-text">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-box" id="sentimentBox">
+                        <span class="result-label">Sentiment</span>
+                        <div class="result-main">
+                            <span class="result-icon" id="sentimentIcon"><i class="fas fa-smile"></i></span>
+                            <div class="result-info">
+                                <span class="result-value" id="sentimentValue">Positive</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="sentimentProgress"></div>
+                                </div>
+                                <span class="result-percent" id="sentimentPercent">95%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-box">
+                        <span class="result-label">Category</span>
+                        <div class="result-main">
+                            <span class="result-icon category-icon" id="categoryIcon"><i class="fas fa-hotel"></i></span>
+                            <div class="result-info">
+                                <span class="result-value" id="categoryValue">Overall</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="categoryProgress"></div>
+                                </div>
+                                <span class="result-percent" id="categoryPercent">88%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="scores-box">
+                    <h4>Sentiment Breakdown</h4>
+                    <div class="score-row">
+                        <span class="score-label"><i class="fas fa-smile"></i> Positive</span>
+                        <div class="score-bar"><div class="score-fill positive" id="positiveBar"></div></div>
+                        <span class="score-value" id="positiveScore">0%</span>
+                    </div>
+                    <div class="score-row">
+                        <span class="score-label"><i class="fas fa-meh"></i> Neutral</span>
+                        <div class="score-bar"><div class="score-fill neutral" id="neutralBar"></div></div>
+                        <span class="score-value" id="neutralScore">0%</span>
+                    </div>
+                    <div class="score-row">
+                        <span class="score-label"><i class="fas fa-frown"></i> Negative</span>
+                        <div class="score-bar"><div class="score-fill negative" id="negativeBar"></div></div>
+                        <span class="score-value" id="negativeScore">0%</span>
+                    </div>
+                </div>
+
+                <div class="quote-box">
+                    <i class="fas fa-quote-left"></i>
+                    <p id="analyzedText"></p>
+                    <span class="quote-time" id="analyzeTime"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Batch Section -->
+    <section id="batch" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Batch Analysis</h2>
+                <p>Analyze multiple reviews at once</p>
+            </div>
+
+            <div class="card">
+                <div class="input-wrapper">
+                    <label for="batchInput">Multiple Reviews (one per line)</label>
+                    <textarea 
+                        id="batchInput" 
+                        placeholder="Enter multiple reviews, one per line..."
+                        rows="6"
+                    ></textarea>
+                </div>
+                <button id="batchAnalyzeBtn" class="btn btn-primary">
+                    <i class="fas fa-layer-group"></i>
+                    Analyze All
+                </button>
+            </div>
+
+            <!-- Batch Results -->
+            <div id="batchResultSection" class="batch-results hidden">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <span class="summary-value" id="totalReviews">0</span>
+                        <span class="summary-label">Total</span>
+                    </div>
+                    <div class="summary-card positive">
+                        <span class="summary-value" id="positiveCount">0</span>
+                        <span class="summary-label">Positive</span>
+                    </div>
+                    <div class="summary-card neutral">
+                        <span class="summary-value" id="neutralCount">0</span>
+                        <span class="summary-label">Neutral</span>
+                    </div>
+                    <div class="summary-card negative">
+                        <span class="summary-value" id="negativeCount">0</span>
+                        <span class="summary-label">Negative</span>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <canvas id="sentimentChart"></canvas>
+                </div>
+
+                <div class="batch-list">
+                    <h4>Individual Results</h4>
+                    <div id="batchResultsList"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Detection Categories</h2>
+                <p>Our AI identifies these key aspects of hotel reviews</p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-broom"></i></div>
+                    <h3>Cleanliness</h3>
+                    <p>Room hygiene, housekeeping, bathroom freshness</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-utensils"></i></div>
+                    <h3>Food & Dining</h3>
+                    <p>Restaurant quality, breakfast, room service</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-user-tie"></i></div>
+                    <h3>Staff & Service</h3>
+                    <p>Customer service, reception, hospitality</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-swimming-pool"></i></div>
+                    <h3>Amenities</h3>
+                    <p>Pool, gym, WiFi, spa, parking</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon"><i class="fas fa-hotel"></i></div>
+                    <h3>Overall</h3>
+                    <p>General experience, value, location</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section section-alt">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <h2>About This Tool</h2>
+                    <p>Built with LSTM (Long Short-Term Memory) neural networks to accurately understand and classify hotel guest reviews.</p>
+                    <ul class="about-list">
+                        <li><i class="fas fa-check"></i> Bidirectional LSTM architecture</li>
+                        <li><i class="fas fa-check"></i> Multi-category detection</li>
+                        <li><i class="fas fa-check"></i> Real-time analysis</li>
+                        <li><i class="fas fa-check"></i> Batch processing support</li>
+                    </ul>
+                </div>
+                <div class="tech-box">
+                    <h3>Technology Stack</h3>
+                    <div class="tech-grid">
+                        <div class="tech-item"><i class="fab fa-python"></i><span>Python</span></div>
+                        <div class="tech-item"><i class="fas fa-brain"></i><span>TensorFlow</span></div>
+                        <div class="tech-item"><i class="fas fa-server"></i><span>FastAPI</span></div>
+                        <div class="tech-item"><i class="fab fa-js"></i><span>JavaScript</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-concierge-bell"></i>
+                    <span>ReviewSense</span>
+                </div>
+                <p>&copy; 2024 Hotel Review Sentiment Analyzer. Powered by LSTM Deep Learning.</p>
+                <div class="footer-links">
+                    <a href="http://localhost:8000/docs" target="_blank">API Docs</a>
+                    <a href="http://localhost:8000/health" target="_blank">Health Check</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading -->
+    <div id="loadingOverlay" class="loading hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Analyzing...</p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast hidden">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Success</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

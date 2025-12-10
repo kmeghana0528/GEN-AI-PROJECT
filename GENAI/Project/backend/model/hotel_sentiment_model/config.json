@@ -1,0 +1,19 @@
+{
+    "max_words": 5000,
+    "max_len": 100,
+    "embedding_dim": 128,
+    "sentiment_labels": {
+        "0": "negative",
+        "1": "neutral",
+        "2": "positive"
+    },
+    "category_labels": {
+        "0": "cleanliness",
+        "1": "food",
+        "2": "staff",
+        "3": "amenities",
+        "4": "overall"
+    },
+    "model_version": "1.0",
+    "training_date": "2024"
+}
